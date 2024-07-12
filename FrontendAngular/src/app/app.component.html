@@ -1,0 +1,47 @@
+<main class="max-w-md mx-auto my-8 p-6 space-y-5 bg-white rounded-md shadow-lg">
+  <div class="flex justify-between items-center gap-5">
+    <h1 class="text-xl font-bold text-center">Lista de Tarefas</h1>
+    <button class="px-4 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 duration-300 text-sm"
+      (click)="openModal()">
+      Adicionar
+    </button>
+  </div>
+  <ul class="space-y-3">
+    <li *ngFor="let task of ordenedTasks" class="flex gap-5 items-center justify-between">
+      <div class="flex items-center gap-5">
+        <input type="checkbox" class="w-6 h-6 cursor-pointer" [checked]="task.completed"
+          (click)="toggleTaskCompletion(task.id!, task.completed)" />
+        <span [ngClass]="{'line-through text-gray-500': task.completed, 'text-black': !task.completed}">
+          {{ task.description }}
+        </span>
+      </div>
+      <div class="flex items-center gap-5">
+        <button class="px-2 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 duration-300 text-sm"
+          (click)="openModal(task)">
+          Editar
+        </button>
+        <button class="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 duration-300 text-sm"
+          (click)="deleteTask(task.id!)">
+          Delete
+        </button>
+      </div>
+    </li>
+  </ul>
+</main>
+
+<div *ngIf="isModalOpen" class="fixed inset-0 flex min-h-screen items-center justify-center bg-gray-500 bg-opacity-75">
+  <div class="bg-white p-6 rounded-md shadow-lg max-w-md w-full">
+    <h2 class="text-xl font-bold mb-4">{{ editTask ? 'Editar Tarefa' : 'Adicionar Tarefa' }}</h2>
+    <input type="text" class="w-full px-3 py-2 border rounded-md mb-4" placeholder="Descrição da tarefa"
+      [(ngModel)]="newTaskDescription" />
+    <div class="flex justify-end gap-2">
+      <button class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 duration-300" (click)="closeModal()">
+        Cancelar
+      </button>
+      <button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 duration-300"
+        (click)="handleSubmit()">
+        {{ editTask ? 'Atualizar' : 'Adicionar' }}
+      </button>
+    </div>
+  </div>
+</div>
