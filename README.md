@@ -31,3 +31,5 @@ Node version:
 - Entrar na pasta FrontendAngular `cd .\FrontendAngular\`
 - Executar `npm install` e em seguida `ng serve`
 
+#### Extras
+Criei uma Branch develop, onde melhorei a estrutura do projeto. No backend trazendo a estrutura dos Controllers e Routes, no Frontend trazendo a estrutura de Services e Paginação do Projeto.
