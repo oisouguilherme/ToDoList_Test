@@ -1,7 +1,7 @@
-import { TaskList } from "./components/Task-List";
+import { Outlet } from "react-router-dom";
 
 function App() {
-  return <TaskList />;
+  return <Outlet />;
 }
 
 export default App;

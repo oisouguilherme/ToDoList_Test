@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { confirmAlert } from "react-confirm-alert";
+import TaskService from "../services/TaskService";
 
 interface Task {
   id?: number;
@@ -17,15 +17,13 @@ export function TaskList() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [editTask, setEditTask] = useState<Task | null>(null);
 
-  const BASE_URL = "http://localhost:3000/api/tasks";
-
   useEffect(() => {
     getTasks();
   }, []);
 
   const getTasks = async () => {
     try {
-      const response = await axios.get<Task[]>(BASE_URL);
+      const response = await TaskService.getTasks();
       setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -39,7 +37,7 @@ export function TaskList() {
         return;
       }
 
-      const response = await axios.post<Task>(BASE_URL, {
+      const response = await TaskService.addTask({
         description: newTaskDescription,
         completed: false,
       });
@@ -62,10 +60,13 @@ export function TaskList() {
         return;
       }
 
-      const response = await axios.put<Task>(`${BASE_URL}/${editTask.id}`, {
-        ...editTask,
-        description: newTaskDescription,
-      });
+      const response = await TaskService.editTask(
+        {
+          ...editTask,
+          description: newTaskDescription,
+        },
+        editTask.id
+      );
 
       if (response.status === 200) {
         setTasks(
@@ -90,9 +91,8 @@ export function TaskList() {
           label: "Sim",
           onClick: async () => {
             try {
-              const res = await axios.delete(`${BASE_URL}/${taskId}`);
-
-              if (res.status === 204) {
+              const response = await TaskService.deleteTask(taskId);
+              if (response.status === 204) {
                 setTasks(tasks.filter((task) => task.id !== taskId));
                 toast.success("Deletado com sucesso!");
               }
@@ -111,11 +111,15 @@ export function TaskList() {
 
   const toggleTaskCompletion = async (taskId: number, completed: boolean) => {
     try {
-      const response = await axios.put<Task>(`${BASE_URL}/${taskId}`, {
-        ...tasks.find((task) => task.id === taskId),
-        completed: !completed,
-        completionDate: completed === false ? new Date() : null,
-      });
+      const response = await TaskService.editTask(
+        {
+          ...tasks.find((task) => task.id === taskId),
+          completed: !completed,
+          completionDate: completed === false ? new Date() : null,
+        },
+        taskId
+      );
+
       setTasks(
         tasks.map((task) => (task.id === taskId ? response.data : task))
       );

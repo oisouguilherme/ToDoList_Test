@@ -1,5 +1,5 @@
 const express = require('express');
-const cors = require('cors'); // Importe o pacote CORS
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const routes = require('./routes');
 const { sequelize } = require('./models');
